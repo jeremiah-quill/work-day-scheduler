@@ -6,6 +6,7 @@ body {
 
 .container {
 	width: 100%;
+	max-width: 90%;
 }
 
 textarea {
@@ -75,9 +76,35 @@ textarea {
 	border-bottom-right-radius: 15px;
 	background-color: #06aed5;
 	color: white;
+	visibility: hidden;
 }
 
 .saveBtn i:hover {
 	font-size: 20px;
 	transition: all 0.3s ease-in-out;
+}
+
+.unsaved {
+	visibility: visible;
+}
+
+@media screen and (max-width: 441px) {
+	.row {
+		height: 60px;
+	}
+	.hour,
+	.saveBtn {
+		flex: 0 35px;
+		font-size: .75rem;
+	}
+	textarea {
+		padding: 3px;
+		font-size: .75rem;
+	}
+	.display-3 {
+		font-size: 3.5rem;
+	}
+	.jumbotron p {
+		font-size: 17px;
+	}
 }

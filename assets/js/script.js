@@ -5,64 +5,54 @@ let timeSlots;
 if(JSON.parse(localStorage.getItem('timeSlots')) == null){
     timeSlots = [
         {
-            time: '8',
+            time: 8,
             timeString: '8am',
             todo: '',
-            state: 'past'
         },
         {
-            time: '9',
+            time: 9,
             timeString: '9am',
             todo: '',
-            state: 'past'
         },
         {
-            time: '10',
+            time: 10,
             timeString: '10am',
             todo: '',
-            state: 'past'
         },
         {
-            time: '11',
+            time: 11,
             timeString: '11am',
             todo: '',
-            state: 'past'
         },
         {
-            time: '12',
+            time: 12,
             timeString: '12pm',
             todo: '',
-            state: 'past'
         },
         {
-            time: '13',
+            time: 13,
             timeString: '1pm',
             todo: '',
-            state: 'past'
         },
         {
-            time: '14',
+            time: 14,
             timeString: '2pm',
             todo: '',
-            state: 'past'
         },
         {
-            time: '15',
+            time: 15,
             timeString: '3pm',
             todo: '',
-            state: 'past'
         },
         {
-            time: '16',
+            time: 16,
             timeString: '4pm',
             todo: '',
-            state: 'past'
         },
         {
-            time: '17',
+            time: 17,
             timeString: '5pm',
             todo: '',
-            state: 'past'
         },
         ]
 } else {
@@ -70,7 +60,7 @@ if(JSON.parse(localStorage.getItem('timeSlots')) == null){
 }
 
 const checkColor = (time, textArea) => {
-if((parseInt(time)) < parseInt(moment().format('k'))) {
+if((time) < parseInt(moment().format('k'))) {
     if(!textArea.hasClass('past')){
         textArea.addClass('past');
        if(textArea.hasClass('present')){
@@ -80,7 +70,7 @@ if((parseInt(time)) < parseInt(moment().format('k'))) {
            textArea.removeClass('future')
        }
     }
-} else if(parseInt(time) === parseInt(moment().format('k'))) {
+} else if(time === parseInt(moment().format('k'))) {
     if(!textArea.hasClass('present')){
         textArea.addClass('present');
        if(textArea.hasClass('past')){
@@ -91,7 +81,7 @@ if((parseInt(time)) < parseInt(moment().format('k'))) {
        }
     }
 }
-else if(parseInt(time) > parseInt(moment().format('k'))) {
+else if(time > parseInt(moment().format('k'))) {
     if(!textArea.hasClass('future')){
         textArea.addClass('future');
        if(textArea.hasClass('past')){
@@ -112,9 +102,17 @@ const renderCalendar = () => {
         let textArea = $('<textarea>').val(slot.todo)
         let button = $('<button>').addClass('saveBtn').text('Save')
         button.on('click', (e) => {
+            button.removeClass('unsaved')
             e.preventDefault();
             slot.todo = textArea.val();
             localStorage.setItem('timeSlots', JSON.stringify(timeSlots))
+        })
+        textArea.on('keyup', () => {
+            if(slot.todo !== textArea.val()) {
+                button.addClass('unsaved')
+            } else if(slot.todo == textArea.val()){
+                button.removeClass('unsaved')
+            }
         })
         checkColor(slot.time, textArea)
         setInterval(() => {
