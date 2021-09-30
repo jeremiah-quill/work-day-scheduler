@@ -3,6 +3,7 @@ const container = $('.container');
 let timeSlots;
 
 if(JSON.parse(localStorage.getItem('timeSlots')) == null){
+    
     timeSlots = [
         {
             time: 8,
@@ -59,36 +60,36 @@ if(JSON.parse(localStorage.getItem('timeSlots')) == null){
     timeSlots = JSON.parse(localStorage.getItem('timeSlots'))
 }
 
-const checkColor = (time, textArea) => {
+const checkColor = (time, el) => {
 if((time) < parseInt(moment().format('k'))) {
-    if(!textArea.hasClass('past')){
-        textArea.addClass('past');
-       if(textArea.hasClass('present')){
-           textArea.removeClass('present')
+    if(!el.hasClass('past')){
+        el.addClass('past');
+       if(el.hasClass('present')){
+           el.removeClass('present')
        };
-       if(textArea.hasClass('future')){
-           textArea.removeClass('future')
+       if(el.hasClass('future')){
+           el.removeClass('future')
        }
     }
 } else if(time === parseInt(moment().format('k'))) {
-    if(!textArea.hasClass('present')){
-        textArea.addClass('present');
-       if(textArea.hasClass('past')){
-           textArea.removeClass('past')
+    if(!el.hasClass('present')){
+        el.addClass('present');
+       if(el.hasClass('past')){
+           el.removeClass('past')
        };
-       if(textArea.hasClass('future')){
-           textArea.removeClass('future')
+       if(el.hasClass('future')){
+           el.removeClass('future')
        }
     }
 }
 else if(time > parseInt(moment().format('k'))) {
-    if(!textArea.hasClass('future')){
-        textArea.addClass('future');
-       if(textArea.hasClass('past')){
-           textArea.removeClass('past')
+    if(!el.hasClass('future')){
+        el.addClass('future');
+       if(el.hasClass('past')){
+           el.removeClass('past')
        };
-       if(textArea.hasClass('present')){
-           textArea.removeClass('present')
+       if(el.hasClass('present')){
+           el.removeClass('present')
        }
     }
 }
