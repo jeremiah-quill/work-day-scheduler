@@ -1,66 +1,32 @@
+// Variables
 const container = $('.container');
 
-let timeSlots;
 
-if(JSON.parse(localStorage.getItem('timeSlots')) == null){
-    
-    timeSlots = [
-        {
-            time: 8,
-            timeString: '8am',
-            todo: '',
-        },
-        {
-            time: 9,
-            timeString: '9am',
-            todo: '',
-        },
-        {
-            time: 10,
-            timeString: '10am',
-            todo: '',
-        },
-        {
-            time: 11,
-            timeString: '11am',
-            todo: '',
-        },
-        {
-            time: 12,
-            timeString: '12pm',
-            todo: '',
-        },
-        {
-            time: 13,
-            timeString: '1pm',
-            todo: '',
-        },
-        {
-            time: 14,
-            timeString: '2pm',
-            todo: '',
-        },
-        {
-            time: 15,
-            timeString: '3pm',
-            todo: '',
-        },
-        {
-            time: 16,
-            timeString: '4pm',
-            todo: '',
-        },
-        {
-            time: 17,
-            timeString: '5pm',
-            todo: '',
-        },
-        ]
-} else {
-    timeSlots = JSON.parse(localStorage.getItem('timeSlots'))
+// Functions
+const addAMPMtoHour = (hour) => {
+    let numHour = parseInt(hour)
+    if(numHour > 12) {
+        return (numHour - 12).toString() + "pm"
+    } else {
+        if(hour === 0) {
+            return "12am"
+        }
+        return hour.toString() + "am"
+    }
 }
 
-const checkColor = (time, el) => {
+const buildTimeSlots = (start, end) =>{
+    let newTimeSlots = []
+    for(let i=start; i<=end; i++) {
+        let slot = {time: i, timeString: addAMPMtoHour(i)}
+        newTimeSlots.push(slot)
+    }
+    // localStorage.setItem("timeSlots", JSON.stringify(newTimeSlots));
+    return newTimeSlots
+}
+
+// Compare slot time with current time, and change class/color accordingly
+const compareSlotToTime = (time, el) => {
 if((time) < parseInt(moment().format('k'))) {
     if(!el.hasClass('past')){
         el.addClass('past');
@@ -81,16 +47,15 @@ if((time) < parseInt(moment().format('k'))) {
            el.removeClass('future')
        }
     }
-}
-else if(time > parseInt(moment().format('k'))) {
+} else if(time > parseInt(moment().format('k'))) {
     if(!el.hasClass('future')){
         el.addClass('future');
-       if(el.hasClass('past')){
-           el.removeClass('past')
-       };
-       if(el.hasClass('present')){
-           el.removeClass('present')
-       }
+        if(el.hasClass('past')){
+            el.removeClass('past')
+        };
+        if(el.hasClass('present')){
+            el.removeClass('present')
+        }
     }
 }
 }
@@ -103,8 +68,8 @@ const renderCalendar = () => {
         let textArea = $('<textarea>').val(slot.todo)
         let button = $('<button>').addClass('saveBtn').text('Save')
         button.on('click', (e) => {
-            button.removeClass('unsaved')
             e.preventDefault();
+            button.removeClass('unsaved')
             slot.todo = textArea.val();
             localStorage.setItem('timeSlots', JSON.stringify(timeSlots))
         })
@@ -115,15 +80,14 @@ const renderCalendar = () => {
                 button.removeClass('unsaved')
             }
         })
-        checkColor(slot.time, textArea)
+        compareSlotToTime(slot.time, textArea)
         setInterval(() => {
-            checkColor(slot.time, textArea)
+            compareSlotToTime(slot.time, textArea)
         }, 1000)
         row.append(hourDiv).append(textArea).append(button)
         container.append(row);
     })
     console.log('rendered')
-
 }
 
 const updateTime = () => {
@@ -135,7 +99,17 @@ const updateTime = () => {
     $('#currentDay').text(timeSpan);
 };
 
+// If no timeslots in local storage, build timeslots from 8am to 5pm
+// If there are timelots in local storage, use those
+let timeSlots;
+
+if(JSON.parse(localStorage.getItem('timeSlots')) == null){
+    timeSlots = buildTimeSlots(8, 17)
+} else {
+    timeSlots = JSON.parse(localStorage.getItem('timeSlots'))
+}
+
 
 updateTime();
-renderCalendar();
 setInterval(updateTime, 1000);
+renderCalendar();

@@ -36,6 +36,11 @@ textarea {
 	white-space: pre-wrap;
 }
 
+.start-time-select,
+.end-time-select {
+	width: 25%;
+}
+
 /* .time-block {
 	text-align: center;
 	border-radius: 15px;
