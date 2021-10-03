@@ -66,18 +66,28 @@ const renderCalendar = () => {
         let row = $('<div>').addClass('row')
         let hourDiv = $('<div>').addClass('hour').text(slot.timeString)
         let textArea = $('<textarea>').val(slot.todo)
-        let button = $('<button>').addClass('saveBtn').text('Save')
+        let button = $('<button>').addClass('saveBtn animate__animated animate__slideOutLeft').text('Save')
         button.on('click', (e) => {
             e.preventDefault();
-            button.removeClass('unsaved')
+            // button.removeClass('unsaved')
+            button.addClass('animate__slideOutLeft')
             slot.todo = textArea.val();
             localStorage.setItem('timeSlots', JSON.stringify(timeSlots))
         })
         textArea.on('keyup', () => {
             if(slot.todo !== textArea.val()) {
+                button.removeClass('animate__slideOutLeft')
+                button.addClass('animate__slideInLeft')
                 button.addClass('unsaved')
             } else if(slot.todo == textArea.val()){
-                button.removeClass('unsaved')
+                button.removeClass('animate__slideInLeft')
+                button.addClass('animate__slideOutLeft')
+                // button.removeClass('unsaved')
+            } 
+            if (slot.todo == undefined && textArea.val() == '') {
+                button.removeClass('animate__slideInLeft')
+                button.addClass('animate__slideOutLeft')
+                // button.removeClass('unsaved')
             }
         })
         compareSlotToTime(slot.time, textArea)
@@ -92,10 +102,13 @@ const renderCalendar = () => {
 
 const updateTime = () => {
     // add time and date to header
-    const hour = moment().format('hh:mm:ss');
+    // const hour = moment().format('hh:mm:ss');
+
     const dayOfWeek = moment().format('dddd'); 
     const dayOfYear = moment().format('MMMM Do');
-    const timeSpan = `${dayOfWeek}, ${dayOfYear} ${hour}`;
+    // const timeSpan = `${dayOfWeek}, ${dayOfYear} ${hour}`;
+    const timeSpan = `${dayOfWeek}, ${dayOfYear}`;
+
     $('#currentDay').text(timeSpan);
 };
 
@@ -105,6 +118,9 @@ let timeSlots;
 
 if(JSON.parse(localStorage.getItem('timeSlots')) == null){
     timeSlots = buildTimeSlots(8, 17)
+    localStorage.setItem('timeSlots', JSON.stringify(timeSlots))
+
+
 } else {
     timeSlots = JSON.parse(localStorage.getItem('timeSlots'))
 }
