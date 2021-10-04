@@ -5,12 +5,12 @@ const container = $('.container');
 // Functions
 const addAMPMtoHour = (hour) => {
     let numHour = parseInt(hour)
-    if(numHour > 12) {
+    if(numHour == 24) {
+        return "12am"
+    } else if(numHour > 12) {
         return (numHour - 12).toString() + "pm"
-    } else {
-        if(hour === 0) {
-            return "12am"
-        }
+    } 
+    else {
         return hour.toString() + "am"
     }
 }
@@ -21,44 +21,58 @@ const buildTimeSlots = (start, end) =>{
         let slot = {time: i, timeString: addAMPMtoHour(i)}
         newTimeSlots.push(slot)
     }
-    // localStorage.setItem("timeSlots", JSON.stringify(newTimeSlots));
+    localStorage.setItem("timeSlots", JSON.stringify(newTimeSlots));
+    console.log(newTimeSlots)
     return newTimeSlots
 }
 
+const getUserInputs = () => {
+    startSelect = $('#start-select')
+    endSelect = $('#end-select')
+    let startOption = startSelect.find(":selected").val()
+    let endOption = endSelect.find(":selected").val()
+    timeSlots = buildTimeSlots(parseInt(startOption), parseInt(endOption))
+    renderCalendar()
+}
+
+
 // Compare slot time with current time, and change class/color accordingly
 const compareSlotToTime = (time, el) => {
-if((time) < parseInt(moment().format('k'))) {
-    if(!el.hasClass('past')){
-        el.addClass('past');
-       if(el.hasClass('present')){
-           el.removeClass('present')
-       };
-       if(el.hasClass('future')){
-           el.removeClass('future')
-       }
-    }
-} else if(time === parseInt(moment().format('k'))) {
-    if(!el.hasClass('present')){
-        el.addClass('present');
-       if(el.hasClass('past')){
-           el.removeClass('past')
-       };
-       if(el.hasClass('future')){
-           el.removeClass('future')
-       }
-    }
-} else if(time > parseInt(moment().format('k'))) {
-    if(!el.hasClass('future')){
-        el.addClass('future');
+    if((time) < parseInt(moment().format('k'))) {
+        if(!el.hasClass('past')){
+            el.addClass('past');
+        if(el.hasClass('present')){
+            el.removeClass('present')
+        };
+        if(el.hasClass('future')){
+            el.removeClass('future')
+        }
+        }
+    } else if(time === parseInt(moment().format('k'))) {
+        if(!el.hasClass('present')){
+            el.addClass('present');
         if(el.hasClass('past')){
             el.removeClass('past')
         };
-        if(el.hasClass('present')){
-            el.removeClass('present')
+        if(el.hasClass('future')){
+            el.removeClass('future')
+        }
+        }
+    } else if(time > parseInt(moment().format('k'))) {
+        if(!el.hasClass('future')){
+            el.addClass('future');
+            if(el.hasClass('past')){
+                el.removeClass('past')
+            };
+            if(el.hasClass('present')){
+                el.removeClass('present')
+            }
         }
     }
 }
-}
+
+
+
 
 const renderCalendar = () => {
     container.empty()
@@ -112,6 +126,21 @@ const updateTime = () => {
     $('#currentDay').text(timeSpan);
 };
 
+
+const renderSelectForm = () => {
+    let startTime = timeSlots[0].time
+    let endTime = timeSlots[timeSlots.length -1].time
+
+    $('#start-select :selected').prop('selected', false);
+    $('#end-select :selected').prop('selected', false);
+
+    $('#start-select').val(startTime).prop('selected', true);
+    $('#end-select').val(endTime).prop('selected', true);
+}
+
+
+
+
 // If no timeslots in local storage, build timeslots from 8am to 5pm
 // If there are timelots in local storage, use those
 let timeSlots;
@@ -120,12 +149,15 @@ if(JSON.parse(localStorage.getItem('timeSlots')) == null){
     timeSlots = buildTimeSlots(8, 17)
     localStorage.setItem('timeSlots', JSON.stringify(timeSlots))
 
-
 } else {
     timeSlots = JSON.parse(localStorage.getItem('timeSlots'))
 }
 
 
+
+
+renderSelectForm()
 updateTime();
 setInterval(updateTime, 1000);
 renderCalendar();
+$('#submit-button').on('click', getUserInputs)
