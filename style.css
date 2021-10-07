@@ -101,6 +101,23 @@ textarea {
 	visibility: visible;
 }
 
+#select-button-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+#select-container {
+	margin-right: 10px;
+}
+
+#message-container {
+	margin-top: 10px;
+	flex-basis: 100%;
+	color: tomato;
+}
+
 @media screen and (max-width: 441px) {
 	.row {
 		height: 60px;
@@ -119,5 +136,8 @@ textarea {
 	}
 	.jumbotron p {
 		font-size: 17px;
+	}
+	#open-modal-button {
+		font-size: .55rem;
 	}
 }

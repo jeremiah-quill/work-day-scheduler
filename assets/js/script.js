@@ -29,10 +29,21 @@ const buildTimeSlots = (start, end) =>{
 const getUserInputs = () => {
     startSelect = $('#start-select')
     endSelect = $('#end-select')
-    let startOption = startSelect.find(":selected").val()
-    let endOption = endSelect.find(":selected").val()
-    timeSlots = buildTimeSlots(parseInt(startOption), parseInt(endOption))
-    renderCalendar()
+    let startOption = parseInt(startSelect.find(":selected").val())
+    let endOption = parseInt(endSelect.find(":selected").val())
+    
+    if(startOption > endOption) {
+        console.log('cant do that')
+        $('#message-container').text('Please choose an ending hour equal to or later than your starting hour.')
+        endSelect.css('color', 'tomato')
+        setTimeout(() => {
+            $('#message-container').empty()
+            endSelect.css('color', 'black')
+        }, 5000)
+    } else {
+        timeSlots = buildTimeSlots(parseInt(startOption), parseInt(endOption))
+        renderCalendar()
+    }
 }
 
 
